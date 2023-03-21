@@ -299,9 +299,10 @@ function update() {
       }
     }
 
-    const predicted = predictedIn15(data.bloodSugars.bgs);
+    const predictedIn15 = predictedLowIn(data.bloodSugars.bgs, 15);
+    const predictedIn20 = predictedLowIn(data.bloodSugars.bgs, 20);
 
-    alerts.check(currentBgFromBloodSugars, data.settings, DISABLE_ALERTS, timeSenseLastSGV, predicted);
+    alerts.check(currentBgFromBloodSugars, data.settings, DISABLE_ALERTS, timeSenseLastSGV, predictedIn15, predictedIn20);
 
     errors.check(timeSenseLastSGV, currentBgFromBloodSugars.currentbg);
     let deltaText = currentBgFromBloodSugars.bgdelta
@@ -363,8 +364,8 @@ function getFistBgNonpredictiveBG(bgs) {
   })[0];
 };
 
-function predictedIn15(bgs) {
-  const recent = bgs.slice(0, 15).reverse();
+function predictedLowIn(bgs, sampleSize) {
+  const recent = bgs.slice(0, sampleSize).reverse();
   const x = [];
   const y = [];
 
@@ -375,8 +376,6 @@ function predictedIn15(bgs) {
 
   const linearRegression = simpleLinearRegression(x, y);
   const lastReading = recent[recent.length - 1];
-
-  console.log(linearRegression.a);
 
   return linearRegression.a * 15 + Number(lastReading.sgv);
 };

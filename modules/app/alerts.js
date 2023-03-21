@@ -36,14 +36,13 @@ let popupLeadText = popup.getElementById('copy')
 const dateTime = new DateTime();
 
 export default class alerts {
-	check(bg, settings, DISABLE_ALERTS, timeSenseLastSGV, predicted) {
+	check(bg, settings, DISABLE_ALERTS, timeSenseLastSGV, predictedIn15, predictedIn20) {
 		let currentBG = bg.currentbg;
 		let loopstatus = bg.loopstatus;
 		let staleData = parseInt(timeSenseLastSGV, 10) >= settings.staleDataAlertAfter; // Boolean true if  timeSenseLastSGV > 15
 
 		alertArrows.href = '../resources/img/arrows/' + bg.direction + '.png';
 		alertArrows.style.display = 'inline';
-		console.log('app - Alerts - Check()', predicted / 18);
 		sgv.style.fill = "#75bd78";
 		largeGraphsSgv.style.fill = "#75bd78";
 		errorLine.style.fill = "#75bd78";
@@ -74,7 +73,8 @@ export default class alerts {
 			// largeGraphErrorLine.style.fill ="#de4430";
 		}
 
-		if (predicted <= parseInt(settings.lowThreshold) && !staleData) {
+		if (predictedIn15 <= parseInt(settings.lowThreshold) && predictedIn20 <= parseInt(settings.lowThreshold) && !staleData) {
+			console.log("LOW PREDICTED");
 			if (!settings.disableAlert) {
 				if (!DISABLE_ALERTS) {
 					if (settings.lowAlerts) {
