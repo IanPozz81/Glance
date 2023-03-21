@@ -36,14 +36,14 @@ let popupLeadText = popup.getElementById('copy')
 const dateTime = new DateTime();
 
 export default class alerts {
-	check(bg, settings, DISABLE_ALERTS, timeSenseLastSGV) {
+	check(bg, settings, DISABLE_ALERTS, timeSenseLastSGV, predicted) {
 		let currentBG = bg.currentbg;
 		let loopstatus = bg.loopstatus;
-        let staleData = parseInt(timeSenseLastSGV, 10) >= settings.staleDataAlertAfter; // Boolean true if  timeSenseLastSGV > 15
+		let staleData = parseInt(timeSenseLastSGV, 10) >= settings.staleDataAlertAfter; // Boolean true if  timeSenseLastSGV > 15
 
 		alertArrows.href = '../resources/img/arrows/' + bg.direction + '.png';
 		alertArrows.style.display = 'inline';
-		console.log('app - Alerts - Check()')
+		console.log('app - Alerts - Check()', predicted / 18);
 		sgv.style.fill = "#75bd78";
 		largeGraphsSgv.style.fill = "#75bd78";
 		errorLine.style.fill = "#75bd78";
@@ -52,7 +52,7 @@ export default class alerts {
 
 
 		let timeSenseLastSGV = dateTime.getTimeSenseLastSGV(bg.datetime)[1];
-        if (bg.sgv <= parseInt(settings.lowThreshold) && !staleData) {
+		if (bg.sgv <= parseInt(settings.lowThreshold) && !staleData) {
 			if (!settings.disableAlert) {
 				if (!DISABLE_ALERTS) {
 					if (settings.lowAlerts) {
@@ -72,8 +72,30 @@ export default class alerts {
 			popupTitle.style.fill = "#de4430";
 			errorLine.style.fill = "#de4430";
 			// largeGraphErrorLine.style.fill ="#de4430";
-
 		}
+
+		if (predicted <= parseInt(settings.lowThreshold) && !staleData) {
+			if (!settings.disableAlert) {
+				if (!DISABLE_ALERTS) {
+					if (settings.lowAlerts) {
+						if (timeSenseLastSGV <= 8) {
+							console.log('predicted low BG')
+							vibration.start("ring");
+							popup.style.display = "inline";
+							popupTitle.style.display = "inline";
+							popupTitle.text = currentBG;
+						}
+					}
+				}
+			}
+			sgv.style.fill = "#de4430";
+			largeGraphsSgv.style.fill = "#de4430";
+
+			popupTitle.style.fill = "#de4430";
+			errorLine.style.fill = "#de4430";
+			// largeGraphErrorLine.style.fill ="#de4430";
+		}
+
 		if (bg.sgv >= parseInt(settings.highThreshold) && !staleData) {
 			if (!settings.disableAlert) {
 				if (!DISABLE_ALERTS) {
@@ -155,7 +177,7 @@ export default class alerts {
 			}
 		}
 
-    // check if stale data 
+		// check if stale data 
 		if (staleData) {
 			if (!settings.disableAlert) {
 				if (!DISABLE_ALERTS) {
@@ -171,6 +193,10 @@ export default class alerts {
 			}
 		}
 
+		// check for predicted low
+		if (!staleData) {
+			//console.log(JSON.stringify(bg));
+		}
 	}
 	stop() {
 		console.log('app - Alerts - stop()')

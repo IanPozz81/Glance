@@ -30,5 +30,8 @@
     "build": "fitbit-build",
     "build-and-install": "npx fitbit",
     "install": "npx fitbit"
+  },
+  "dependencies": {
+    "simple-linear-regression": "^1.0.3"
   }
 }
