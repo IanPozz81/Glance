@@ -74,7 +74,6 @@ export default class alerts {
 		}
 
 		if (predictedIn15 <= parseInt(settings.lowThreshold) && predictedIn20 <= parseInt(settings.lowThreshold) && !staleData) {
-			console.log("LOW PREDICTED");
 			if (!settings.disableAlert) {
 				if (!DISABLE_ALERTS) {
 					if (settings.lowAlerts) {
