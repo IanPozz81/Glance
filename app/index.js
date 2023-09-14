@@ -241,6 +241,9 @@ function update() {
       }
     }
 
+    const predictedIn5 = predictedInXMinutes(data.bloodSugars.bgs, 5);
+    const predictedIn15 = predictedInXMinutes(data.bloodSugars.bgs, 15);
+
     if (
       currentBgFromBloodSugars[data.settings.layoutThree] &&
       data.settings.layoutThree != "steps"
@@ -249,9 +252,10 @@ function update() {
       stepIcon.style.display = "none";
       steps.x = 10;
     } else {
-      steps.text = commas(userActivity.get().steps);
-      stepIcon.style.display = "inline";
-      steps.x = 35;
+      steps.text = predictedIn5 ? (predictedIn5 / 18).toFixed(2) : ``;
+      cob.x = 10;
+      stepIcon.style.display = "none";
+      steps.x = 10;
     }
 
     if (
@@ -262,9 +266,11 @@ function update() {
       heartIcon.style.display = "none";
       heart.x = 10;
     } else {
-      heart.text = userActivity.get().heartRate;
-      heartIcon.style.display = "inline";
-      heart.x = 35;
+      // heart.text = userActivity.get().heartRate;
+      heartIcon.style.display = "none";
+      heart.x = 10;
+      heart.text = predictedIn15 ? (predictedIn15 / 18).toFixed(2) : ``;
+      heart.style.display = "inline";
     }
 
     sgv.text = currentBgFromBloodSugars.currentbg;
@@ -321,9 +327,6 @@ function update() {
         }
       }
     }
-
-    const predictedIn5 = predictedInXMinutes(data.bloodSugars.bgs, 5);
-    const predictedIn15 = predictedInXMinutes(data.bloodSugars.bgs, 15);
 
     alerts.check(
       currentBgFromBloodSugars,
@@ -410,10 +413,8 @@ function predictedInXMinutes(bgs, sampleSize) {
   const lastReading = recent[recent.length - 1];
 
   console.log(
-    `Sample Size: ${sampleSize}, Linear X: ${
-      linearRegression.a
-    }, Last Reading: ${Number(lastReading.sgv)}, Prediction: ${
-      linearRegression.a * 15 + Number(lastReading.sgv)
+    `Sample Size: ${sampleSize}, Linear X: ${linearRegression.a
+    }, Last Reading: ${Number(lastReading.sgv)}, Prediction: ${linearRegression.a * 15 + Number(lastReading.sgv)
     }`
   );
 

@@ -81,7 +81,7 @@ export default class alerts {
       predictedIn5 <= parseInt(settings.lowThreshold) &&
       predictedIn15 <= parseInt(settings.lowThreshold) &&
       !staleData &&
-      bg.sgv <= parseInt(settings.lowThreshold) + 18
+      bg.sgv <= parseInt(settings.lowThreshold) + 18 // Stop giving alerts too early
     ) {
       if (!settings.disableAlert) {
         if (!DISABLE_ALERTS) {
